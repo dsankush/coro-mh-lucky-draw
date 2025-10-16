@@ -1,1 +1,1 @@
-# coro-mh-lucky-draw
+# coro-lucky-draw

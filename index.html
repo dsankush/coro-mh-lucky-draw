@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coromandel CPC Lucky Draw</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Full-page layout with two background images */
+    .full-page {
+      width: 100vw;
+      height: 100vh;
+      background: 
+        url("https://raw.githubusercontent.com/dsankush/coro-lucky-draw/main/DB/entry/home_screen_1.jpg") top center / cover no-repeat, 
+        url("https://raw.githubusercontent.com/dsankush/coro-lucky-draw/main/DB/entry/home_screen_2.png") bottom center / cover no-repeat;
+      background-size: 100% 50%, 100% 50%;
+      background-repeat: no-repeat, no-repeat;
+      background-position: top, bottom;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Card container */
+    .card-container {
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      top: 53%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+    }
+
+    /* Individual card */
+    .card {
+      width: 180px;
+      height: 300px;
+      border-radius: 15px;
+      border: 3px solid rgba(255, 255, 150, 0.8);
+      box-shadow: 0 0 10px rgba(255, 255, 150, 0.5);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease-in-out;
+      animation: jump 2s infinite ease-in-out, glow 1.5s infinite alternate;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hover effect */
+    .card:hover {
+      transform: scale(1.15);
+      animation: none;
+    }
+
+    /* Golden glowing effect */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 20px;
+      background: radial-gradient(circle, rgba(255, 215, 0,0.8) 0%, rgba(255, 215, 0,0.4) 50%, transparent 100%);
+      z-index: -1;
+      filter: blur(20px);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    /* Button images */
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .card img.loaded {
+      opacity: 1;
+    }
+
+    /* Loading spinner */
+    .card::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      border: 3px solid rgba(255, 215, 0, 0.3);
+      border-top-color: rgba(255, 215, 0, 0.8);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .card img.loaded ~ .card::after,
+    .card.image-loaded::after {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Jumping animation */
+    @keyframes jump {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* Glowing animation */
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 1);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="full-page">
+    <div class="card-container" id="cardContainer"></div>
+  </div>
+
+  <script>
+    // ===== IMAGE PATH & NAVIGATION CONFIGURATION =====
+    const CONFIG = {
+      imagePath: "https://raw.githubusercontent.com/dsankush/coro-lucky-draw/main/DB/entry/",
+      pageBasePath: "https://dsankush.github.io/coro-lucky-draw/",
+      cards: [
+        {
+          image: "Card1.jpg",
+          link: "page1/page1.html"
+        },
+        {
+          image: "Card2.jpg",
+          link: "page2/page2.html"
+        },
+        {
+          image: "Card3.jpg",
+          link: "page3/page3.html"
+        },
+        {
+          image: "Card4.jpg",
+          link: "page4/page4.html"
+        },
+        {
+          image: "Card5.jpg",
+          link: "page5/page5.html"
+        },
+        {
+          image: "Card6.jpg",
+          link: "page6/page6.html"
+        }
+      ]
+    };
+    // ===== END CONFIGURATION =====
+
+    // Preload images for faster loading
+    const preloadImages = (cards) => {
+      cards.forEach(card => {
+        const img = new Image();
+        img.src = card.image.startsWith('http') ? card.image : CONFIG.imagePath + card.image;
+      });
+    };
+
+    // Start preloading
+    preloadImages(CONFIG.cards);
+
+    // Generate cards dynamically
+    const cardContainer = document.getElementById('cardContainer');
+    
+    CONFIG.cards.forEach((card, index) => {
+      const link = document.createElement('a');
+      link.href = CONFIG.pageBasePath + card.link;
+      link.className = 'card';
+      link.title = `Card ${index + 1}`;
+      
+      const img = new Image();
+      img.alt = `Card ${index + 1}`;
+      
+      // Show image smoothly when loaded
+      img.onload = function() {
+        this.classList.add('loaded');
+        link.classList.add('image-loaded');
+      };
+      
+      // Set source after onload handler
+      img.src = card.image.startsWith('http') ? card.image : CONFIG.imagePath + card.image;
+      
+      link.appendChild(img);
+      cardContainer.appendChild(link);
+    });
+  </script>
+
+</body>
+</html>
+
+
