@@ -82,6 +82,47 @@
       opacity: 1;
     }
 
+      .thank-you-btn {
+      opacity: 0;          /* Makes it invisible */
+      pointer-events: auto; /* Keeps it clickable */
+    }
+
+        /* ===== THANK YOU BUTTON ===== */
+    .thank-you-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: linear-gradient(135deg, #facc15 0%, #f59e0b 50%, #d97706 100%);
+      border: 2px solid #fff;
+      color: #1f2937;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(250, 204, 21, 0.4), 0 0 20px rgba(245, 158, 11, 0.3);
+      animation: pulseGlow 1.5s infinite alternate;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-size: 16px;
+      z-index: 100;
+    }
+    
+    /* Hover effect */
+    .thank-you-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 24px rgba(250, 204, 21, 0.5), 0 0 30px rgba(245, 158, 11, 0.4);
+    }
+    
+    /* Subtle glow animation */
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 4px 16px rgba(250, 204, 21, 0.4), 0 0 20px rgba(245, 158, 11, 0.3);
+      }
+      100% {
+        box-shadow: 0 6px 24px rgba(250, 204, 21, 0.5), 0 0 30px rgba(245, 158, 11, 0.4);
+      }
+    }
+
+
     /* Button images */
     .card img {
       width: 100%;
@@ -149,6 +190,9 @@
 
   <div class="full-page">
     <div class="card-container" id="cardContainer"></div>
+    <!-- Thank You Button (Top Right Corner) -->
+    <a href="#" class="thank-you-btn">Thank You</a>
+
   </div>
 
   <script>
@@ -224,6 +268,7 @@
 
 </body>
 </html>
+
 
 
 
